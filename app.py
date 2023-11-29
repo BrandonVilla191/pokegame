@@ -15,7 +15,16 @@ npc_dialogues = {
     "npc4": "Hi"
 }
 
-background = pygame.image.load('background.jpg')
+background = pygame.image.load('back.jpg')
+
+# Get the width and height of the image
+bg_width, bg_height = background.get_size()
+
+# Calculate the center of the screen
+screen_center = (screen_width // 2, screen_height // 2)
+
+# Calculate the position to blit the image
+bg_position = (screen_center[0] - bg_width // 2, screen_center[1] - bg_height // 2)
 
 
 npcs = [
@@ -30,7 +39,7 @@ current_dialogue = None
 
 running = True
 while running:
-    screen.blit(background, (0, 0))
+    screen.blit(background, bg_position)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -61,7 +70,7 @@ while running:
         current_dialogue = None
 
 
-    pygame.draw.rect(screen, 'blue', player)
+    pygame.draw.rect(screen, 'black', player)
     for i, npc in enumerate(npcs):
         pygame.draw.rect(screen, npc_colors[i], npc)
 
