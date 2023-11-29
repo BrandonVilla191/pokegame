@@ -25,6 +25,8 @@ screen_center = (screen_width // 2, screen_height // 2)
 
 # Calculate the position to blit the image
 bg_position = (screen_center[0] - bg_width // 2, screen_center[1] - bg_height // 2)
+sprite = pygame.image.load('sprite.png').convert_alpha()
+sprite = pygame.transform.scale(sprite, (75, 75))
 
 
 npcs = [
@@ -40,6 +42,7 @@ current_dialogue = None
 running = True
 while running:
     screen.blit(background, bg_position)
+    screen.blit(sprite, (player.x, player.y))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -70,7 +73,6 @@ while running:
         current_dialogue = None
 
 
-    pygame.draw.rect(screen, 'black', player)
     for i, npc in enumerate(npcs):
         pygame.draw.rect(screen, npc_colors[i], npc)
 
