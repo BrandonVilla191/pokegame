@@ -1,13 +1,23 @@
+from enum import Enum
 import pygame
 
 pygame.init()
 
-screen_width, screen_height = 800, 600
-screen = pygame.display.set_mode((screen_width, screen_height))
+SCREEN_WIDTH, SCREEN_HEIGHT = 1000, 1000
+BLACK = (0, 0, 0)
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
-player = pygame.Rect(screen_width // 2, screen_height // 2, 40, 40)
-player_speed = .8
-npc_colors = ['red', 'blue', 'green', 'yellow']
+class GameState(Enum):
+    HOME = 1
+    MAIN = 2
+
+player = pygame.Rect(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, 40, 40)
+PLAYER_SPEED = 4
+NPC_SIZE = (60, 60)
+PLAYER_WIDTH = 120
+PLAYER_HEIGHT = 90
+clock = pygame.time.Clock()
+
 npc_dialogues = {
     "npc1": "bruh",
     "npc2": "go away ",
@@ -15,71 +25,94 @@ npc_dialogues = {
     "npc4": "Hi"
 }
 
-background = pygame.image.load('back.jpg')
+instructions_font = pygame.font.Font(None, 36)
+instructions_text = [
+    "Welcome to [name of game]!",
+    "Use the arrow keys to move your character.",
+    "The goal is to select the correct dialogue option for each NPC.",
+    "Press ENTER to continue."
+]
 
-# Get the width and height of the image
-bg_width, bg_height = background.get_size()
+main_backgroundImage = pygame.image.load('back.jpg')
+main_background = pygame.transform.scale(main_backgroundImage, (SCREEN_WIDTH, SCREEN_HEIGHT))
+home_backgroundImage = pygame.image.load('back.jpg') ## TODO: CHANGE THIS TO A DIFFERENT PICTURE (or different for the actual game)
+home_background = pygame.transform.scale(home_backgroundImage, (SCREEN_WIDTH, SCREEN_HEIGHT))
+game_state = GameState.HOME
 
 # Calculate the center of the screen
-screen_center = (screen_width // 2, screen_height // 2)
+screen_center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
 
-# Calculate the position to blit the image
-bg_position = (screen_center[0] - bg_width // 2, screen_center[1] - bg_height // 2)
-sprite = pygame.image.load('sprite.png').convert_alpha()
-sprite = pygame.transform.scale(sprite, (75, 75))
+player_sprite = pygame.image.load('sprite.png').convert_alpha()
+player_sprite = pygame.transform.scale(player_sprite, (PLAYER_WIDTH, PLAYER_HEIGHT))
+player = {"rect": pygame.Rect(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, PLAYER_WIDTH, PLAYER_HEIGHT), "sprite": player_sprite}
 
 
 npcs = [
-    pygame.Rect(10, screen_height // 2, 30, 30),
-    pygame.Rect(screen_width - 40, screen_height // 2, 30, 30),
-    pygame.Rect(screen_width // 2, 10, 30, 30),
-    pygame.Rect(screen_width // 2, screen_height - 40, 30, 30),
+    {"rect": pygame.Rect(10, SCREEN_HEIGHT // 2, *NPC_SIZE), "sprite": pygame.transform.scale(pygame.image.load('squirtle.png').convert_alpha(), NPC_SIZE)},
+    {"rect": pygame.Rect(SCREEN_WIDTH - 70, SCREEN_HEIGHT // 2, *NPC_SIZE), "sprite": pygame.transform.scale(pygame.image.load('squirtle.png').convert_alpha(), NPC_SIZE)},
+    {"rect": pygame.Rect(SCREEN_WIDTH // 2, 10, *NPC_SIZE), "sprite": pygame.transform.scale(pygame.image.load('squirtle.png').convert_alpha(), NPC_SIZE)},
+    {"rect": pygame.Rect(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 70, *NPC_SIZE), "sprite": pygame.transform.scale(pygame.image.load('squirtle.png').convert_alpha(), NPC_SIZE)},
 ]
+
 
 font = pygame.font.Font(None, 36)
 current_dialogue = None
 
 running = True
 while running:
-    screen.blit(background, bg_position)
-    screen.blit(sprite, (player.x, player.y))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_w]:
-        player.y -= player_speed
-        if player.y < 0:
-            player.y = 0
-    if keys[pygame.K_s]:
-        player.y += player_speed
-        if player.y > screen_height - player.height: 
-            player.y = screen_height - player.height
-    if keys[pygame.K_a]:
-        player.x -= player_speed
-        if player.x < 0:
-            player.x = 0
-    if keys[pygame.K_d]:
-        player.x += player_speed
-        if player.x > screen_width - player.width: 
-            player.x = screen_width - player.width 
-
-    for i, npc in enumerate(npcs):
-        if player.colliderect(npc):
-            current_dialogue = npc_dialogues[f'npc{i+1}']
-            break
-    else:
-        current_dialogue = None
+        if game_state == GameState.HOME:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                game_state = GameState.MAIN
 
 
-    for i, npc in enumerate(npcs):
-        pygame.draw.rect(screen, npc_colors[i], npc)
+    
+    if game_state == GameState.HOME:
+        screen.blit(home_background, (0, 0))
+        for i, line in enumerate(instructions_text):
+            text = instructions_font.render(line, True, BLACK)
+            screen.blit(text, (50, 50 + 40 * i))
 
-    if current_dialogue:
-        text = font.render(current_dialogue, True, (0, 0, 0))
-        screen.blit(text, (20, 20))
+    elif game_state == GameState.MAIN:
+        screen.blit(main_background, (0, 0))
+        screen.blit(player["sprite"], player["rect"])
+        
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT] and player['rect'].left > 0:
+            player['rect'].move_ip(-1 * PLAYER_SPEED, 0)
+        if keys[pygame.K_RIGHT] and player['rect'].right < SCREEN_HEIGHT:
+            player['rect'].move_ip(PLAYER_SPEED, 0)
+        if keys[pygame.K_UP] and player['rect'].top > 0:
+            player['rect'].move_ip(0, -1 * PLAYER_SPEED)
+        if keys[pygame.K_DOWN] and player['rect'].bottom < SCREEN_WIDTH:
+            player['rect'].move_ip(0, PLAYER_SPEED)
+
+        for i, npc in enumerate(npcs):
+            if player["rect"].colliderect(npc["rect"]):
+                
+                player_mask = pygame.mask.from_surface(player["sprite"])
+                npc_mask = pygame.mask.from_surface(npc["sprite"])
+
+                offset_x = npc["rect"].x - player["rect"].x
+                offset_y = npc["rect"].y - player["rect"].y
+
+                if player_mask.overlap(npc_mask, (offset_x, offset_y)):
+                    current_dialogue = npc_dialogues[f'npc{i+1}']
+                    break
+            else:
+                current_dialogue = None
+
+
+        for i, npc in enumerate(npcs):
+            screen.blit(npc["sprite"], npc["rect"])
+
+        if current_dialogue:
+            text = font.render(current_dialogue, True, (0, 0, 0))
+            screen.blit(text, (20, 20))
 
     pygame.display.flip()
+    clock.tick(60)
 
 pygame.quit()
