@@ -34,7 +34,7 @@ instructions_text = [
     "Press ENTER to continue."
 ]
 
-main_backgroundImage = pygame.image.load('back.jpg')
+main_backgroundImage = pygame.image.load('background.jpg')
 main_background = pygame.transform.scale(main_backgroundImage, (SCREEN_WIDTH, SCREEN_HEIGHT))
 home_backgroundImage = pygame.image.load('back.jpg') ## TODO: CHANGE THIS TO A DIFFERENT PICTURE (or different for the actual game)
 home_background = pygame.transform.scale(home_backgroundImage, (SCREEN_WIDTH, SCREEN_HEIGHT))
