@@ -3,7 +3,7 @@ import pygame
 
 pygame.init()
 
-SCREEN_WIDTH, SCREEN_HEIGHT = 1000, 1000
+SCREEN_WIDTH, SCREEN_HEIGHT = 750, 750
 BLACK = (0, 0, 0)
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
@@ -33,7 +33,7 @@ instructions_text = [
     "Press ENTER to continue."
 ]
 
-main_backgroundImage = pygame.image.load('back.jpg')
+main_backgroundImage = pygame.image.load('background.jpg')
 main_background = pygame.transform.scale(main_backgroundImage, (SCREEN_WIDTH, SCREEN_HEIGHT))
 home_backgroundImage = pygame.image.load('back.jpg') ## TODO: CHANGE THIS TO A DIFFERENT PICTURE (or different for the actual game)
 home_background = pygame.transform.scale(home_backgroundImage, (SCREEN_WIDTH, SCREEN_HEIGHT))
