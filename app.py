@@ -16,9 +16,9 @@ class GameState(Enum):
 
 player = pygame.Rect(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, 40, 40)
 PLAYER_SPEED = 10
-NPC_SIZE = (60, 60)
-PLAYER_WIDTH = 120
-PLAYER_HEIGHT = 90
+NPC_SIZE = (90, 90)
+PLAYER_WIDTH = 80
+PLAYER_HEIGHT = 200
 clock = pygame.time.Clock()
 
 npcs = {
@@ -32,7 +32,7 @@ npcs = {
         "reason": ["Incorrect! Providing a detailed", "query will help the chatbot", "help you."],
     },
     "npc_right": {
-        "rect": pygame.Rect(SCREEN_WIDTH - 70, SCREEN_HEIGHT // 2, *NPC_SIZE),
+        "rect": pygame.Rect(SCREEN_WIDTH - 90, SCREEN_HEIGHT // 2, *NPC_SIZE),
         "sprite": pygame.transform.scale(pygame.image.load('squirtle.png').convert_alpha(), NPC_SIZE),
         "question": ["In the context of interacting with", "an AI health chatbot, what is the", "significance of understanding the", "limitations and capabilities of the", "technology?"], 
         "answer1": ["No limitations, it can handle", "all queries."], 
@@ -50,7 +50,7 @@ npcs = {
         "reason": ["Incorrect! Medical databases alone", "are not enough to consider the", "important context of the", "patient's medical history."]
     },
     "npc_bot": {
-        "rect": pygame.Rect(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 70, *NPC_SIZE),
+        "rect": pygame.Rect(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 90, *NPC_SIZE),
         "sprite": pygame.transform.scale(pygame.image.load('squirtle.png').convert_alpha(), NPC_SIZE),
         "question": ["How should you responsibly interact", "with a medical chatbot when seeking", "medical advice?"], 
         "answer1": ["Ask it to cure your illness."], 
@@ -62,7 +62,7 @@ npcs = {
 
 instructions_font = pygame.font.Font(None, 36)
 instructions_text = [
-    "Welcome to our demo!",
+    "Welcome to AI for Bedside Patient Assistance - the Game!",
     "Use the arrow keys to move your character to a NPC.",
     "The goal is to select the correct dialogue option",
     "for each NPC by pressing either A or B.",
@@ -71,7 +71,7 @@ instructions_text = [
 
 main_backgroundImage = pygame.image.load('background.jpg')
 main_background = pygame.transform.scale(main_backgroundImage, (SCREEN_WIDTH, SCREEN_HEIGHT))
-home_backgroundImage = pygame.image.load('back.jpg') ## TODO: CHANGE THIS TO A DIFFERENT PICTURE (or different for the actual game)
+home_backgroundImage = pygame.image.load('back.jpg')
 home_background = pygame.transform.scale(home_backgroundImage, (SCREEN_WIDTH, SCREEN_HEIGHT))
 question_backgroundImage = pygame.image.load('question_background.png')
 question_background = pygame.transform.scale(question_backgroundImage, (SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -80,7 +80,7 @@ game_state = GameState.HOME
 # Calculate the center of the screen
 screen_center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
 
-player_sprite = pygame.image.load('sprite.png').convert_alpha()
+player_sprite = pygame.image.load('player_sprite2.png').convert_alpha()
 player_sprite = pygame.transform.scale(player_sprite, (PLAYER_WIDTH, PLAYER_HEIGHT))
 player = {"rect": pygame.Rect(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, PLAYER_WIDTH, PLAYER_HEIGHT), "sprite": player_sprite}
 
